@@ -1,0 +1,17 @@
+[build]
+  command = "pip install -r requirements.txt && streamlit run streamlit_app.py"
+  publish = "."
+  functions = "functions"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+[[redirects]]
+  from = "/*"
+  to = "/streamlit_app.py"
+  status = 200
+
+[dev]
+  command = "streamlit run streamlit_app.py"
+  port = 8000
+  publish = "." 

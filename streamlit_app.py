@@ -152,6 +152,74 @@ def fetch_f1_calendar(year=2024):
         st.error(f"Error fetching F1 calendar: {e}")
         return pd.DataFrame()  # Return empty DataFrame on error
 
+@st.cache_data(ttl=86400)  # Cache for 24 hours
+def fetch_circuit_info(circuit_name):
+    """
+    Fetch circuit information using FastF1 API
+    
+    Args:
+        circuit_name (str): The name of the circuit
+        
+    Returns:
+        dict: Circuit information including corners, marshal lights, marshal sectors, and rotation
+    """
+    try:
+        # Use the fastf1.mvapi.CircuitInfo class to get circuit details
+        from fastf1.mvapi import CircuitInfo
+        
+        # Log the fetch attempt
+        print(f"Fetching circuit info for: {circuit_name}")
+        
+        # Circuit data is accessed through fastf1 events module
+        circuits = fastf1.get_event_schedule(2024)['CircuitKey']
+        
+        # Find the circuit key for the given circuit name
+        circuit_key = None
+        for idx, key in circuits.items():
+            circuit_data = fastf1.get_event(2024, idx)
+            if circuit_name.lower() in circuit_data.location.lower() or circuit_name.lower() in circuit_data.name.lower():
+                circuit_key = key
+                break
+                
+        if not circuit_key:
+            print(f"Circuit key not found for: {circuit_name}")
+            return None
+            
+        # Get circuit info
+        info = None
+        try:
+            info = fastf1.CircuitInfo(circuit_key)
+        except:
+            try:
+                # Alternative fetch using raw MVApi object
+                info = fastf1.mvapi.CircuitInfo(
+                    corners=pd.DataFrame(),
+                    marshal_lights=pd.DataFrame(),
+                    marshal_sectors=pd.DataFrame(),
+                    rotation=0
+                )
+            except Exception as e:
+                print(f"Error creating circuit info object: {e}")
+                return None
+                
+        if info:
+            # Extract useful data
+            result = {
+                "name": circuit_name,
+                "circuit_key": circuit_key,
+                "corners": info.corners.to_dict() if hasattr(info, 'corners') and not info.corners.empty else {},
+                "marshal_lights": info.marshal_lights.to_dict() if hasattr(info, 'marshal_lights') and not info.marshal_lights.empty else {},
+                "marshal_sectors": info.marshal_sectors.to_dict() if hasattr(info, 'marshal_sectors') and not info.marshal_sectors.empty else {},
+                "rotation": info.rotation if hasattr(info, 'rotation') else 0
+            }
+            return result
+        
+        return None
+        
+    except Exception as e:
+        print(f"Error fetching circuit info: {e}")
+        return None
+
 def get_race_status(race_date):
     """Determine the status of a race based on date comparison"""
     if race_date is None or pd.isna(race_date):
@@ -611,5 +679,6 @@ def main():
     st.markdown("---")
     st.markdown("Data provided by FastF1 API")
 
+# This ensures the main function runs only if this file is executed directly
 if __name__ == "__main__":
     main() 
