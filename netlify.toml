@@ -1,7 +1,6 @@
 [build]
-  command = "pip install -r requirements.txt && streamlit run streamlit_app.py"
-  publish = "."
-  functions = "functions"
+  publish = "build_output"
+  command = "mkdir -p build_output && echo '<html><head><meta http-equiv=\"refresh\" content=\"0;url=https://f1paddock.streamlit.app/\"></head><body>Redirecting to Streamlit app...</body></html>' > build_output/index.html"
 
 [build.environment]
   PYTHON_VERSION = "3.11"

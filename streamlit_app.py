@@ -7,6 +7,7 @@ import streamlit as st
 import pandas as pd
 import fastf1
 import json
+import setuptools
 from datetime import datetime, timedelta
 
 # Page configuration
@@ -235,7 +236,10 @@ def get_race_status(race_date):
         race_weekend_start = race_date - timedelta(days=2)
         race_weekend_end = race_date + timedelta(hours=6)
         
-        if race_date < today:
+        # Mark as completed only on the day after the race (day+1)
+        race_day_plus_one = race_date + timedelta(days=1)
+        
+        if race_date.date() < today.date() and race_day_plus_one.date() <= today.date():
             return "Completed"
         elif race_weekend_start <= today <= race_weekend_end:
             return "Ongoing"
