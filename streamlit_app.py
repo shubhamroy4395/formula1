@@ -726,8 +726,18 @@ def create_calendar_table(races):
 # ---------- MAIN APP ----------
 
 def main():
-    # Header
-    st.title("F1 Paddock by Shubham")
+    # Header with navigation
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.title("F1 Paddock by Shubham")
+    with col2:
+        # Create navigation buttons with Spotify-like styling
+        st.markdown("""
+        <div style="text-align: right; margin-top: 20px;">
+            <a href="/" style="display: inline-block; background-color: #121212; color: white; text-decoration: none; padding: 8px 16px; margin-right: 8px; border-radius: 50px;">Home</a>
+            <a href="/1_Circuits" style="display: inline-block; background-color: #FF1801; color: white; text-decoration: none; padding: 8px 16px; border-radius: 50px; font-weight: bold;">Circuits</a>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Apply CSS for status badges and animations
     st.markdown(race_status_css, unsafe_allow_html=True)
