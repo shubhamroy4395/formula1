@@ -3,12 +3,27 @@
 Streamlit web app to display F1 race calendar data.
 """
 
+import os
+import sys
 import streamlit as st
 import pandas as pd
 import fastf1
 import json
 import setuptools
 from datetime import datetime, timedelta
+
+# Quick health check for deployment environments
+if len(sys.argv) > 1 and sys.argv[1] == "healthcheck":
+    print("Streamlit app is healthy")
+    sys.exit(0)
+
+# Set page config
+st.set_page_config(
+    page_title="F1 Paddock - Race Calendar",
+    page_icon="🏎️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # Page configuration
 st.set_page_config(
