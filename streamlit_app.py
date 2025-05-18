@@ -17,14 +17,6 @@ if len(sys.argv) > 1 and sys.argv[1] == "healthcheck":
     print("Streamlit app is healthy")
     sys.exit(0)
 
-# Set page config
-st.set_page_config(
-    page_title="F1 Paddock - Race Calendar",
-    page_icon="🏎️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
 # Page configuration
 st.set_page_config(
     page_title="F1 Paddock by Shubham",
