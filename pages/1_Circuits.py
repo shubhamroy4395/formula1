@@ -104,10 +104,9 @@ st.markdown("""
         background-color: #181818;
         border-radius: 8px;
         padding: 16px;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
         transition: background-color 0.3s ease;
         border: 1px solid #282828;
-        cursor: pointer;
     }
     
     .circuit-card:hover {
@@ -300,13 +299,19 @@ def display_circuit_list():
     for i, circuit in enumerate(CURRENT_CIRCUITS):
         col = cols[i % 3]
         with col:
-            # Create a clickable card for each circuit
-            st.markdown(f"""
-            <div class="circuit-card" onclick="window.location.href='?circuit={circuit['wiki_name']}'">
-                <h3>{circuit['name']}</h3>
-                <p>{circuit['location']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            # Create a card for each circuit using Streamlit components
+            with st.container():
+                st.markdown(f"""
+                <div class="circuit-card">
+                    <h3>{circuit['name']}</h3>
+                    <p>{circuit['location']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Add a button below each card to navigate to the circuit details
+                if st.button(f"View Details", key=f"btn_{circuit['wiki_name']}"):
+                    st.experimental_set_query_params(circuit=circuit['wiki_name'])
+                    st.experimental_rerun()
 
 def display_circuit_detail(circuit_wiki_name):
     """Display detailed information about a specific circuit"""
