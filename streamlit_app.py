@@ -712,7 +712,11 @@ def create_calendar_table(races):
     winner_info = []
     for _, race in df.iterrows():
         if race['status'] == 'Completed' and race.get('winner'):
-            winner_info.append(race['winner'].get('display', '-'))
+            winner = race['winner']
+            # Use full driver name and team name in the winner display
+            driver_name = winner.get('driver_name', '-')
+            team_name = winner.get('team', '-')
+            winner_info.append(f"{driver_name} ({team_name})")
         else:
             winner_info.append('-')
     
@@ -720,6 +724,10 @@ def create_calendar_table(races):
     
     # Sort by round number
     display_df = display_df.sort_values('Round')
+    
+    # Reorder columns for better readability
+    column_order = ['Round', 'Race Name', 'Circuit', 'Country', 'Date', 'Status', 'Sprint', 'Winner']
+    display_df = display_df.reindex(columns=column_order)
     
     return display_df
 
