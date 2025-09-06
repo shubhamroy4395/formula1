@@ -832,8 +832,10 @@ def main():
     if calendar_table.empty:
         st.warning(f"No races with status '{filter_choice}' found.")
     else:
-        # Display the table with enhanced HTML styling
-        html_table = "<table class='dataframe'><thead><tr>"
+        # Display the table with enhanced HTML styling and mobile scrolling
+        html_table = """
+        <div class="table-container">
+            <table class='dataframe'><thead><tr>"""
         
         # Add headers
         for col in calendar_table.columns:
@@ -899,11 +901,84 @@ def main():
                     html_table += f"<td>{row[col]}</td>"
             html_table += "</tr>"
         
-        html_table += "</tbody></table>"
+        html_table += """</tbody></table>
+        </div>"""
         
         # Apply additional table styling
         st.markdown("""
         <style>
+        /* Mobile-responsive table container */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 24px;
+        }
+        
+        /* Mobile-specific styling */
+        @media (max-width: 768px) {
+            .table-container {
+                margin: 0 -1rem;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            .dataframe {
+                min-width: 800px; /* Ensure table doesn't get too cramped */
+                font-size: 12px;
+            }
+            
+            .dataframe th,
+            .dataframe td {
+                padding: 8px 12px;
+                white-space: nowrap;
+            }
+            
+            .dataframe th {
+                font-size: 0.75rem;
+                padding: 10px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .dataframe {
+                min-width: 700px;
+                font-size: 11px;
+            }
+            
+            .dataframe th,
+            .dataframe td {
+                padding: 6px 8px;
+            }
+            
+            .dataframe th {
+                font-size: 0.7rem;
+                padding: 8px 8px;
+            }
+        }
+        
+        /* Custom scrollbar for table container */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(16, 18, 27, 0.4);
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, var(--f1-red), #FF5E54);
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, #FF5E54, var(--f1-red));
+        }
+        
         /* Spotify-like table styling */
         .dataframe {
             width: 100%;
